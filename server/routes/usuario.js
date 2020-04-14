@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
-const Usuario = require('../models/usuario')
+
+//Para hacer la encriptacion de una sola via
 const bcrypt = require('bcrypt');
+const Usuario = require('../models/usuario')
 const _ = require('underscore')
 
 app.get('/usuario', (req, res) => {
@@ -55,10 +57,10 @@ app.post('/usuario', (req, res) => {
 
 app.put('/usuario/:id', (req, res) => {
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre', 'email', 'img', 'rol', 'estado']);
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'rol', 'estado']); //pick retorna una copia del objeto filtrando solo los valores que se necesite usar
 
-    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
-        if (err) {
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => { //new:true para devolver el documento modificado en lugar del original. Por defecto es falso
+        if (err) { //runValidators: ejecuta todas validaciones definidas en el esquema
             return res.status(400).json({
                 ok: false,
                 error: err
@@ -107,3 +109,6 @@ module.exports = app;
 //usuario:giuzepe
 //clave:Jw5JRKdjDCQ3ZiU7
 //cadena de conexion: mongodb+srv://giuzepe:Jw5JRKdjDCQ3ZiU7@cluster0-e5ecg.mongodb.net/cafe
+
+//Para conectar a cluster0 desde Robo 3T a mongoDB atlas se necesita esta cadena de conexion
+//mongodb+srv://giuzepe:Jw5JRKdjDCQ3ZiU7@cluster0-e5ecg.mongodb.net/cafe

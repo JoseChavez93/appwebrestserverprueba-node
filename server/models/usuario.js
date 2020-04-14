@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+//Para darle un mejor formato al mensaje de error(UNIQUE)
 const uniqueValidator = require('mongoose-unique-validator');
 
 
@@ -7,6 +8,7 @@ let rolesValidos = {
     message: '{VALUE} no es un rol valido'
 }
 
+//Creacion de Esquema
 let Schema = mongoose.Schema;
 
 let usuarioSchema = new Schema({
@@ -42,6 +44,15 @@ let usuarioSchema = new Schema({
     }
 
 });
+
+
+//Saca la contraseña del esquema(averiguar mas)
+usuarioSchema.methods.toJSON = function() {
+    let user = this;
+    let userObject = user.toObject();
+    delete userObject.password;
+    return userObject;
+}
 
 
 usuarioSchema.plugin(uniqueValidator, { message: '{PATH} debe ser unico' })
