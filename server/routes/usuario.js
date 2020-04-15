@@ -4,9 +4,10 @@ const app = express()
 //Para hacer la encriptacion de una sola via
 const bcrypt = require('bcrypt');
 const Usuario = require('../models/usuario')
+const { verificaToken, verificaAdmin_Rol } = require('../middlewares/autenticacion')
 const _ = require('underscore')
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', verificaToken, (req, res) => {
 
     let desde = req.query.desde || 0;
     desde = Number(desde)
@@ -31,7 +32,7 @@ app.get('/usuario', (req, res) => {
     })
 })
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdmin_Rol], (req, res) => {
     let body = req.body;
     let usuario = new Usuario({
         nombre: body.nombre,
@@ -55,7 +56,7 @@ app.post('/usuario', (req, res) => {
     })
 })
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Rol], (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'rol', 'estado']); //pick retorna una copia del objeto filtrando solo los valores que se necesite usar
 
@@ -73,7 +74,7 @@ app.put('/usuario/:id', (req, res) => {
     })
 })
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Rol], (req, res) => {
     let id = req.params.id;
     let cambiarEstado = {
         estado: false
